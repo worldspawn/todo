@@ -1,9 +1,8 @@
 module.exports = function (server) {
   var requireDir = require('require-dir');
-  var intravenous = require('intravenous');
-  var serviceDefinitions = requireDir('../services');
+    var serviceDefinitions = requireDir('../services');
   var Q = require('q');
-  var Builder = require('../wuh')(Q);
+  var Builder = require('../lib/di')(Q);
 
   var disposeActions = {};
 

@@ -9,7 +9,6 @@
   "author": "sam critchley",
   "license": "ISC",
   "dependencies": {
-    "intravenous": "^0.1.4-beta",
     "mongodb": "^2.0.28",
     "q": "^1.3.0",
     "require-dir": "^0.3.0",

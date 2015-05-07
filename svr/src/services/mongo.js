@@ -3,7 +3,7 @@ var Q = require('q');
 
 module.exports = function () {
   var defer = Q.defer();
-  var url = 'mongodb://localhost:27017/myproject';
+  var url = 'mongodb://localhost:27017/todo';
 // Use connect method to connect to the Server
   MongoClient.connect(url, function(err, db) {
     if (err) {
@@ -16,3 +16,5 @@ module.exports = function () {
 
   return defer.promise;
 }
+
+module.exports.$lifecycle = 'singleton';

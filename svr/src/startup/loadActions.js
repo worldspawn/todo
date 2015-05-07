@@ -11,15 +11,12 @@ module.exports = function (server) {
     return function (req, res, next) {
       var args = [req, res, next];
       if (req.$di) {
-        action.inject.forEach(function (name) {
-          args.push(req.$di.get(name));
-        });
-
-        console.log('waiting for args')
-        Q.all(args).then(function (x) {
-          console.log('running action', action.action);
-          action.action.apply(action, x);
-        });
+        var x = req.$di.get(action.inject);
+        
+        Q.when(x)
+          .then(function (x) {
+            action.action.apply(action, args.concat(x));
+          });
       }
       else {
         next(new Error('req.$di is null or undefined. No DI container found.'));
