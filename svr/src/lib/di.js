@@ -132,7 +132,12 @@ module.exports = function (Q) {
           .fail(fail);
       }
       else{
-        resolveValue(lf, requestContext, registration, defer, []);
+        if (registration.factory instanceof Function) {
+          resolveValue(lf, requestContext, registration, defer, []);
+        }
+        else{
+          defer.resolve(registration.factory);
+        }
       }
     }
     else {
@@ -189,7 +194,6 @@ module.exports = function (Q) {
       this.cache = null;
       this.registrations = null;
       this.parent = null;
-
     },
     get: function (name) {
       if (name instanceof Array) {

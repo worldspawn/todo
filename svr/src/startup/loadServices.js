@@ -29,21 +29,27 @@ module.exports = function (server) {
 
   var container = builder.build();
 
+  function DiWrapper(container) {
+    this.$container = container;
+  }
+
+  DiWrapper.prototype = {
+    get: function(name) {
+      var response = this.$container.get(name);
+      return response;
+    }
+  }
+
   server.use(function (req, res, next) {
     var nested = container.create('request');
-    req.$di = {
-      $container: nested,
-      get: function(name) {
-        var response = this.$container.get(name);
-        return response;
-      }
-    };
+    req.$di = new DiWrapper(nested);
     next();
   });
 
   server.on('after', function (req) {
     if (req.$di) {
       req.$di.$container.dispose();
+      delete req.$di;
     }
   });
 };

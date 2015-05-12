@@ -10,6 +10,7 @@ module.exports = function () {
       defer.reject(err);
       return;
     }
+
     defer.resolve(db);
     console.log("Connected correctly to server");
   });
@@ -18,3 +19,6 @@ module.exports = function () {
 }
 
 module.exports.$lifecycle = 'singleton';
+module.exports.$onDispose = function (db) {
+  db.close();
+}
