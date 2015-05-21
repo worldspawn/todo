@@ -28,6 +28,7 @@ module.exports = function (server) {
   }
 
   var container = builder.build();
+  server.$container = container;
 
   function DiWrapper(container) {
     this.$container = container;

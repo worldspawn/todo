@@ -7,6 +7,7 @@ var server = restify.createServer({
 
 server.use(restify.acceptParser(server.acceptable));
 server.use(restify.bodyParser({ mapParams: true }));
+server.use(restify.queryParser());
 
 server.on('uncaughtException', function(req, res, route, err) {
   res.send(err.stack);
@@ -14,6 +15,7 @@ server.on('uncaughtException', function(req, res, route, err) {
 
 require('./src/startup/loadServices')(server);
 require('./src/startup/loadActions')(server);
+require('./src/startup/initDb')(server);
 
 //TODO: AUTHENTICATION
 //TODO: AUTHORIZATION

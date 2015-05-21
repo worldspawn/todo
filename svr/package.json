@@ -9,9 +9,7 @@
   "author": "sam critchley",
   "license": "ISC",
   "dependencies": {
-    "async": "^0.9.0",
-    "cassandra-driver": "^2.0.1",
-    "mongodb": "^2.0.28",
+    "cradle": "^0.6.9",
     "q": "^1.3.0",
     "require-dir": "^0.3.0",
     "restify": "^3.0.2"

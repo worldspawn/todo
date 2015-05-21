@@ -1,20 +1,29 @@
-var BSON = require('mongodb').BSON,
-  ObjectID = require('mongodb').ObjectID,
-  cassandra = require('cassandra-driver');
-
 module.exports =
 [
   {
-    method: 'get', path: '/todo', inject: ['cassandra'],
+    method: 'get', path: '/todo', inject: ['couchdb'],
     action: function (req, res, next, db) {
-      db.execute("SELECT id, name FROM items;", function (err, result) {
-           if (!err) {
-             res.send(result.rows);
-           }
+      console.log(req.query);
+      if (req.query.completingOn) {
+        var date = new Date(Date.parse(req.query.completingOn));
+        var key = [date.getFullYear(), date.getMonth(), null];
+        db.view('items/byDate', { startkey: key }, function (err, data) {
+          if (!err) {
+            res.send(data);
+          }
 
-           // Run next function in series
-           next(err, null);
-       });
+          next(err, null);
+        });
+      }
+      else {
+        db.view('items/all', function (err, data) {
+          if (!err) {
+            res.send(data);
+          }
+
+          next(err, null);
+        });
+      }
     }
   },
   {
@@ -36,20 +45,12 @@ module.exports =
     }
   },
   {
-    method: 'post', path: '/todo', inject: ['cassandra'],
+    method: 'post', path: '/todo', inject: ['couchdb'],
     action: function (req, res, next, db) {
-      var todo = req.body.todo;
-      var id = null;
-      if (todo.hasOwnProperty('id')){
-        id = todo.id;
-      }
-      else {
-        id = cassandra.types.uuid();
-      }
-      db.execute('insert into items (id, name) values (?, ?);', [id, todo.name],
-        function (err, result) {
+      db.save({name: req.body.todo.name, completeBy: req.body.todo.completeBy, doc_type: 'item'},
+        function (err, data) {
           if (!err) {
-            res.send(201, { id: id });
+            res.send(data);
           }
 
           next(err, null);
